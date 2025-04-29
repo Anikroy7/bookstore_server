@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import db from "./app/db/db";
+import router from "./app/routes";
 require('dotenv').config()
 
 const app: Application = express();
@@ -13,6 +14,8 @@ app.use(
     }),
 )
 
+// application routes
+app.use('/api/v1', router)
 
 // welcome route
 app.get('/', async (req: Request, res: Response) => {
