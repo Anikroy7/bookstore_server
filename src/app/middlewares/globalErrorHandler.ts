@@ -40,7 +40,30 @@ const globalErrorHandler = (
         message: message,
       },
     ];
-  } else if (err?.code === "23503") {
+  }
+  if (err?.code === "42703") {
+    // FOr Invalid data
+    statusCode = httpStatus.BAD_REQUEST;
+    message = `Invalid data`;
+    errorSources = [
+      {
+        path: err.column || "",
+        message: message,
+      },
+    ];
+  }
+  if (err?.code === "22P02") {
+    // FOr Invalid data
+    statusCode = httpStatus.BAD_REQUEST;
+    message = `Invalid reference id`;
+    errorSources = [
+      {
+        path: err.column || "",
+        message: message,
+      },
+    ];
+  }
+  else if (err?.code === "23503") {
     // FOREIGN KEY violation
     statusCode = httpStatus.BAD_REQUEST;
     message = `Invalid reference in field: ${err.column}`;
@@ -61,7 +84,7 @@ const globalErrorHandler = (
       },
     ];
   }
-  else if (err?.code === "22007"|| err?.code === "22008") {
+  else if (err?.code === "22007" || err?.code === "22008") {
     // Invalid date format or out of range
     statusCode = httpStatus.BAD_REQUEST;
     message = `Invalid date format for field: ${err.column || 'birthdate'}`;
