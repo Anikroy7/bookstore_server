@@ -42,6 +42,27 @@ const deleteBookIntoDB = async (id: string) => {
     return deleted;
 }
 
+const getBookWithAuthorFromDB = async (id: string) => {
+    const book = await db('books').where({ id }).first();
+    if (!book) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Book not found');
+    }
+    const result = await db('books')
+        .join('authors', 'books.author_id', 'authors.id')
+        .where('books.id', id)
+        .select([
+            'books.id as book_id',
+            'books.title',
+            'books.description',
+            'books.published_date',
+            'books.author_id',
+            'authors.name as author_name',
+            'authors.bio as author_bio',
+            'authors.birthdate as author_birthdate',
+        ])
+        .first();
+    return result;
+}
 
 
 export const BooksServices = {
@@ -49,5 +70,6 @@ export const BooksServices = {
     createBookIntoDB,
     updateBookByIdIntoDB,
     getSingleBookFromDB,
-    deleteBookIntoDB
+    deleteBookIntoDB,
+    getBookWithAuthorFromDB
 }

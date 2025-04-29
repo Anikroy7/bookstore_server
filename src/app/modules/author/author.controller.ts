@@ -57,6 +57,25 @@ const deleteAuthor = catchAsync(async (req, res) => {
     });
 });
 
+const authorsWithBooks = catchAsync(async (req, res) => {
+    const result = await AuthorServices.getAuthorsWithBooksFromDB();
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "All authors with books retrieved successfully",
+        data: result,
+    });
+});
+const authorWithBooks = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const result = await AuthorServices.getAuthorWithBooksFromDB(id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Author with book retrieved successfully",
+        data: result,
+    });
+});
 
 
 export const AuthorControllers = {
@@ -64,5 +83,7 @@ export const AuthorControllers = {
     getSingleAuthor,
     updateAuthor,
     getAllAuthors,
-    deleteAuthor
+    deleteAuthor,
+    authorsWithBooks,
+    authorWithBooks
 }

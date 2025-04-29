@@ -53,6 +53,16 @@ const deleteBook = catchAsync(async (req, res) => {
         data: result,
     });
 });
+const bookWithAuthor = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const result = await BooksServices.getBookWithAuthorFromDB(id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Book with author retrived successfully",
+        data: result,
+    });
+});
 
 
 
@@ -61,5 +71,6 @@ export const BookControllers = {
     createBook,
     updateBook,
     getBook,
+    bookWithAuthor,
     deleteBook
 }

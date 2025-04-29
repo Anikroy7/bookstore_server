@@ -7,6 +7,8 @@ const router = express.Router();
 
 
 router.get('/',AuthorControllers.getAllAuthors);
+router.get('/authors-with-books',AuthorControllers.authorsWithBooks);
+router.get('/author-with-books/:id',AuthorControllers.authorWithBooks);
 
 router.post('/',
     validateRequest(createAuthorValidationSchema),

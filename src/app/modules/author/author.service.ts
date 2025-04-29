@@ -39,10 +39,67 @@ const deleteAuthorByIdIntoDB = async (id: string) => {
 
     return deleted;
 }
+
+const getAuthorsWithBooksFromDB = async () => {
+    const authors = await db('authors')
+        .leftJoin('books', 'authors.id', 'books.author_id')
+        .groupBy('authors.id')
+        .select([
+            'authors.id as author_id',
+            'authors.name as author_name',
+            'authors.bio as author_bio',
+            'authors.birthdate as author_birthdate',
+            db.raw(
+                `COALESCE(
+             json_agg(json_build_object(
+               'id', books.id,
+               'title', books.title,
+               'published_date', books.published_date
+             )) FILTER (WHERE books.id IS NOT NULL),
+             '[]'
+           ) as books`
+            ),
+        ]);
+    return authors;
+}
+
+const getAuthorWithBooksFromDB = async (id: string) => {
+    const author = await db('authors').where({ id }).first();
+    if (!author) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Author not found');
+    }
+
+    const result = await db('authors')
+        .leftJoin('books', 'authors.id', 'books.author_id')
+        .where('authors.id', id)
+        .groupBy('authors.id')
+        .select([
+            'authors.id as author_id',
+            'authors.name as author_name',
+            'authors.bio as author_bio',
+            'authors.birthdate as author_birthdate',
+            db.raw(
+                `COALESCE(
+             json_agg(json_build_object(
+               'id', books.id,
+               'title', books.title,
+               'published_date', books.published_date
+             )) FILTER (WHERE books.id IS NOT NULL),
+             '[]'
+           ) as books`
+            ),
+        ])
+        .first();
+    return result;
+}
+
+
 export const AuthorServices = {
     createAuthorIntoDB,
     getSingleAuthorFromDB,
     getAllAuthorsFromDB,
     updateAuthorByIdIntoDB,
-    deleteAuthorByIdIntoDB
+    deleteAuthorByIdIntoDB,
+    getAuthorsWithBooksFromDB,
+    getAuthorWithBooksFromDB
 }
