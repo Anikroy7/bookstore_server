@@ -6,7 +6,7 @@ import httpStatus from "http-status";
 
 const createAuthor = catchAsync(async (req, res) => {
     const authorData = req.body;
-    const result = await AuthorServices.createAuthor(authorData);
+    const result = await AuthorServices.createAuthorIntoDB(authorData);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -15,7 +15,19 @@ const createAuthor = catchAsync(async (req, res) => {
     });
 });
 
+const getSingleAuthor = catchAsync(async (req, res) => {
+    const {id} = req.params;
+    const result = await AuthorServices.getSingleAuthorFromDB(id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Author retrieved successfully",
+        data: result,
+    });
+});
+
 
 export const AuthorControllers = {
-    createAuthor
+    createAuthor,
+    getSingleAuthor
 }

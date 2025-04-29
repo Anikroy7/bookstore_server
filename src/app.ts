@@ -1,7 +1,8 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
-import db from "./app/db/db";
 import router from "./app/routes";
+import globalErrorHandler from "./app/middlewares/globalErrorHandler";
+import notFound from "./app/middlewares/notFound";
 require('dotenv').config()
 
 const app: Application = express();
@@ -19,19 +20,16 @@ app.use('/api/v1', router)
 
 // welcome route
 app.get('/', async (req: Request, res: Response) => {
-
-    await db('authors').insert({
-        name: "trst",
-        bio: "setstsetse",
-        birthdate: new Date("2000-07-06"),
-    }).then(() => {
-        console.log("data inserted successfully");
-    }).catch((error) => {
-        console.error("error inserting dta", error);
-    })
     res.json({
         "message": "Welcome to books store Server"
     })
 })
+
+
+//Global middleware
+app.use(globalErrorHandler);
+
+//not Found
+app.use(notFound)
 
 export default app;
