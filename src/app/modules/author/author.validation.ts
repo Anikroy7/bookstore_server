@@ -14,3 +14,12 @@ export const createAuthorValidationSchema = z.object({
         }),
     }),
 });
+
+
+export const updateAuthorValidationSchema = z.object({
+    body: z.object({
+        name: z.string().optional(),
+        bio: z.string().optional(),
+        birthdate: z.coerce.date().optional(),
+    }),
+});

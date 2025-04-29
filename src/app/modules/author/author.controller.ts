@@ -16,7 +16,7 @@ const createAuthor = catchAsync(async (req, res) => {
 });
 
 const getSingleAuthor = catchAsync(async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     const result = await AuthorServices.getSingleAuthorFromDB(id);
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -25,9 +25,44 @@ const getSingleAuthor = catchAsync(async (req, res) => {
         data: result,
     });
 });
+const getAllAuthors = catchAsync(async (req, res) => {
+    const result = await AuthorServices.getAllAuthorsFromDB();
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "All authors retrieved successfully",
+        data: result,
+    });
+});
+
+const updateAuthor = catchAsync(async (req, res) => {
+    const {id}= req.params;
+    const authorData = req.body;
+    const result = await AuthorServices.updateAuthorByIdIntoDB(id, authorData);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Author updated successfully",
+        data: result,
+    });
+});
+const deleteAuthor = catchAsync(async (req, res) => {
+    const {id}= req.params;
+    const result = await AuthorServices.deleteAuthorByIdIntoDB(id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Author deleted successfully",
+        data: result,
+    });
+});
+
 
 
 export const AuthorControllers = {
     createAuthor,
-    getSingleAuthor
+    getSingleAuthor,
+    updateAuthor,
+    getAllAuthors,
+    deleteAuthor
 }

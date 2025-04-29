@@ -16,7 +16,33 @@ const getSingleAuthorFromDB = async (id: string) => {
     return author;
 }
 
+const getAllAuthorsFromDB = async () => {
+    const authors = await db('authors').select('*');
+    return authors;
+}
+const updateAuthorByIdIntoDB = async (id: string, payload: IAuthor) => {
+    const author = await db('authors').where({ id }).first();
+    if (!author) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Author not found');
+    }
+
+    const result = await db('authors').where({ id }).update(payload).returning('*');
+    return result;
+}
+
+const deleteAuthorByIdIntoDB = async (id: string) => {
+    const author = await db('authors').where({ id }).first();
+    if (!author) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Author not found');
+    }
+    const deleted = await db('authors').where({ id }).del();
+
+    return deleted;
+}
 export const AuthorServices = {
     createAuthorIntoDB,
-    getSingleAuthorFromDB
+    getSingleAuthorFromDB,
+    getAllAuthorsFromDB,
+    updateAuthorByIdIntoDB,
+    deleteAuthorByIdIntoDB
 }
