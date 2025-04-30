@@ -1,13 +1,46 @@
 import db from "../../db/db";
 import AppError from "../../errors/AppError";
+import { IPaginationOptions, TFilterableFields } from "../../types/global";
+import { paginationHelper } from "../../utils/paginationHelpers";
 import IBook from "./book.interface";
 import httpStatus from "http-status";
 
 
-const getAllBooksFromDB = async () => {
-    const books = await db('books')
-        .select('*');
-    return books
+const getAllBooksFromDB = async (params: TFilterableFields, options: IPaginationOptions) => {
+    const { page, limit, skip } = paginationHelper.calculatePagination(options);
+    const { searchTerm, author } = params;
+    const query = db('books').select('*');
+
+    if (searchTerm) {
+        query.whereILike('title', `%${searchTerm}%`);
+    }
+
+    if (author) {
+        query.where('author_id', author);
+    }
+
+    query.limit(limit).offset(skip);
+
+    const books = await query;
+
+    const countQuery = db('books');
+    if (searchTerm) {
+        countQuery.whereILike('title', `%${searchTerm}%`);
+    }
+
+    if (author) {
+        countQuery.where('author_id', author);
+    }
+
+    const [{ count }] = await countQuery.count('* as count');
+    return {
+        meta: {
+            page,
+            limit,
+            total: Number(count),
+        },
+        data: books,
+    };
 }
 
 const createBookIntoDB = async (payload: IBook) => {

@@ -1,5 +1,7 @@
 import catchAsync from "../../utils/catchAsync";
+import pick from "../../utils/pick";
 import sendResponse from "../../utils/sendResponse";
+import { authorFilterableFields } from "./author.constant";
 import { AuthorServices } from "./author.service";
 import httpStatus from "http-status";
 
@@ -26,7 +28,11 @@ const getSingleAuthor = catchAsync(async (req, res) => {
     });
 });
 const getAllAuthors = catchAsync(async (req, res) => {
-    const result = await AuthorServices.getAllAuthorsFromDB();
+    const filters = pick(req.query, authorFilterableFields);
+
+    const options = pick(req.query, ['limit', 'page'])
+
+    const result = await AuthorServices.getAllAuthorsFromDB(filters,options);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,

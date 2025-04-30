@@ -1,5 +1,7 @@
 import db from "../../db/db";
 import AppError from "../../errors/AppError";
+import { IPaginationOptions, TFilterableFields } from "../../types/global";
+import { paginationHelper } from "../../utils/paginationHelpers";
 import IAuthor from "./author.interface";
 import httpStatus from "http-status";
 
@@ -16,9 +18,36 @@ const getSingleAuthorFromDB = async (id: string) => {
     return author;
 }
 
-const getAllAuthorsFromDB = async () => {
-    const authors = await db('authors').select('*');
-    return authors;
+const getAllAuthorsFromDB = async (params: TFilterableFields, options: IPaginationOptions) => {
+
+    const { searchTerm } = params;
+
+    const { page, limit, skip } = paginationHelper.calculatePagination(options);
+
+    const query = db('authors').select('*');
+
+    if (searchTerm) {
+        query.whereILike('name', `%${searchTerm}%`);
+    }
+    query.limit(limit).offset(skip);
+
+    const authors = await query;
+
+    const countQuery = db('authors');
+    if (searchTerm) {
+        countQuery.whereILike('name', `%${searchTerm}%`);
+    }
+
+    const [{ count }] = await countQuery.count('* as count');
+
+    return {
+        meta: {
+            page,
+            limit,
+            total: Number(count),
+        },
+        data: authors,
+    };
 }
 const updateAuthorByIdIntoDB = async (id: string, payload: IAuthor) => {
     const author = await db('authors').where({ id }).first();

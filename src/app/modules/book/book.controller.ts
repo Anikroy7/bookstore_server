@@ -1,10 +1,15 @@
 import catchAsync from "../../utils/catchAsync";
+import pick from "../../utils/pick";
 import sendResponse from "../../utils/sendResponse";
+import { bookFilterableFields } from "./book.constant";
 import { BooksServices } from "./book.service";
 import httpStatus from "http-status";
 
 const getAllBooks = catchAsync(async (req, res) => {
-    const result = await BooksServices.getAllBooksFromDB();
+    const options = pick(req.query, ['limit', 'page'])
+    const filters = pick(req.query, bookFilterableFields);
+
+    const result = await BooksServices.getAllBooksFromDB(filters, options);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
