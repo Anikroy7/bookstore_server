@@ -33,12 +33,13 @@ export default config; */
  * @type { Object.<string, import("knex").Knex.Config> }
  */
 import type { Knex } from 'knex';
+import config  from '../config';
 
-const config: { [key: string]: Knex.Config } = {
+const knexFile: { [key: string]: Knex.Config } = {
 
   development: {
     client: 'postgresql',
-    connection: 'postgresql://neondb_owner:npg_ncv05RBDjeqI@ep-falling-truth-a1cwzvja-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require',
+    connection: config.database_url,
     pool: {
       min: 2,
       max: 10
@@ -50,5 +51,5 @@ const config: { [key: string]: Knex.Config } = {
 
 };
 
-export default config;
+export default knexFile;
 

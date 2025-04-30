@@ -1,41 +1,116 @@
-# **Instruction**
+# 📚 Bookstore RESTful API
 
-**Step - 1:** Create an `eslint.config.mjs` and copy the code from: 
-<br> 
-[Eslint File](https://github.com/ShafiaChy/Eslint-Config-Setup/blob/main/eslint.config.mjs)
-<br>
+A RESTful API for managing books and authors, built with **TypeScript**, **Express.js**, **Knex.js**, and **MySQL/PostgreSQL**. This project supports full CRUD operations, input validation, error handling, pagination, and search functionality.
 
-*Delete the files `eslintrc` and `.eslintignore`*
+---
 
-**Step - 2:** Copy/paste the following lines and paste inside `script` in `package.json` code from given in the package.json
-```
+## Features
 
-    "lint": "npx eslint src --ignore-pattern .ts",
-    "lint:fix": "npx eslint src --fix",
-    "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\"",
-    "prettier:fix": "npx prettier --write src",
+- Full CRUD for books and authors
+- Express Validator for input validation
+- Knex.js as SQL query builder
+- PostgreSQL/MySQL support
+- Views with nested relationships (e.g., authors with their books)
+- Pagination and search support
+- Centralized error handling
+- Environment-based configuration
+- Fully typed with TypeScript
+- Clean, modular project structure
 
-```
+---
 
-<br>
+---
 
-**Step - 3:** Install the `prettier` package
+## 🧪 Technologies Used
 
-```
-    npm install --save-dev prettier
-```
+- Node.js
+- TypeScript
+- Express.js
+- Knex.js
+- PostgreSQL / MySQL
+- Express Validator
+- dotenv
+- ESLint + Prettier
 
-<br>
+---
 
-<br>
+## 🧾 API Endpoints
 
-*If prettier does not work*, follow step 4:
+### 📖 Authors
 
-**Step - 4:** Add the code below to the `settings.json` file:
+| Method | Endpoint          | Description                   |
+|--------|-------------------|-------------------------------|
+| GET    | /authors          | Get all authors               |
+| GET    | /authors/:id      | Get an author by ID           |
+| POST   | /authors          | Create a new author           |
+| PUT    | /authors/:id      | Update an author              |
+| DELETE | /authors/:id      | Delete an author              |
 
-```
-      "editor.defaultFormatter": "esbenp.prettier-vscode",
-      "editor.formatOnSave": true,
-```
+### 📚 Books
 
-<br>
+| Method | Endpoint          | Description                          |
+|--------|-------------------|--------------------------------------|
+| GET    | /books            | Get all books                        |
+| GET    | /books/:id        | Get a book by ID                     |
+| POST   | /books            | Create a new book                    |
+| PUT    | /books/:id        | Update a book                        |
+| DELETE | /books/:id        | Delete a book                        |
+| GET    | /books?author=6   | Filter books by author ID            |
+
+---
+
+## 📋 Validation Rules
+
+Handled using **Zod**.
+
+**Authors:**
+
+- `name`: Required, non-empty string
+- `birthdate`: Required, valid date
+
+**Books:**
+
+- `title`: Required, non-empty string
+- `published_date`: Required, valid date
+- `author_id`: Required, must reference an existing author
+
+---
+
+## 📄 Views
+
+- **GET /authors-with-books**: List of authors with their books
+- **GET /author-with-books/:id**: Details of an author and their books
+- **GET /book-with-author/:id**: Details of a book with author info
+
+---
+
+## 🔐 Error Handling
+
+Centralized error handling for:
+
+- Resource not found
+- Validation errors
+- Database errors
+
+Returns meaningful HTTP status codes and messages.
+
+---
+
+## ⚙️ Environment Setup
+
+### Prerequisites
+
+- Node.js (v18+)
+- PostgreSQL
+- npm
+
+### Installation
+
+```bash
+git clone https://github.com/Anikroy7/bookstore_server.git
+cd bookstore-api
+npm install
+npm run migrate
+
+npm run start:dev
+
